@@ -4,7 +4,7 @@ import logo from "../../assets/argentBankLogo.png";
 
 import "./style.scss";
 
-function Navigation() {
+function Navigation({ isLogged, handleLogin }) {
   return (
     <nav className="main-nav">
       <NavLink to="/" className="main-nav-logo">
@@ -12,10 +12,22 @@ function Navigation() {
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
       <div>
-        <NavLink to="/login" className="main-nav-item">
-          <i className="fa fa-user-circle"></i>
-          Sign In
-        </NavLink>
+        {!isLogged ? (
+          <NavLink to="/user/login" className="main-nav-item">
+            <i className="fa fa-user-circle"></i>
+            Sign In
+          </NavLink>
+        ) : (
+          <>
+            <NavLink to="/user/profile" className="main-nav-item">
+              <i className="fa fa-user-circle"></i>
+              profile
+            </NavLink>
+            <NavLink className="main-nav-item" onClick={handleLogin}>
+              logout
+            </NavLink>
+          </>
+        )}
       </div>
     </nav>
   );

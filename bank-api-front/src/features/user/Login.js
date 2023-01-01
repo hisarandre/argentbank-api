@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser, fetchUserBytoken, userSelector, clearState } from "./userSlice";
+import { loginUser, fetchUserBytoken, userSelector, clearState, checkToken } from "./userSlice";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ isLogged }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const { isSuccess, isError, errorMessage, token, id } = useSelector(userSelector);
+  const { isSuccess, isError, errorMessage, token } = useSelector(userSelector);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,15 +16,6 @@ const Login = () => {
     setUsername("");
     setPassword("");
   };
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearState());
-      if (token) {
-        navigate(`/user/${id}`);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (isError) {
@@ -36,14 +26,9 @@ const Login = () => {
     if (isSuccess) {
       dispatch(clearState());
       dispatch(fetchUserBytoken({ token: token }));
+      navigate(`/user/profile`);
     }
   }, [isError, isSuccess]);
-
-  useEffect(() => {
-    if (id) {
-      navigate(`/user/${id}`);
-    }
-  }, [id]);
 
   return (
     <form method="POST" onSubmit={handleSubmit}>

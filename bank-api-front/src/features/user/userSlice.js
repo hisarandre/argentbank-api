@@ -49,32 +49,38 @@ export const fetchUserBytoken = createAsyncThunk("user/fetchUserByToken", async 
   }
 });
 
+const initialState = {
+  email: "",
+  firstname: "",
+  lastname: "",
+  id: "",
+  token: sessionStorage.getItem("token"),
+  isSuccess: false,
+  isError: false,
+  errorMessage: "",
+};
+
 export const userSlice = createSlice({
   name: "user",
-  initialState: {
-    email: "",
-    firstname: "",
-    lastname: "",
-    id: "",
-    token: "",
-    isSuccess: false,
-    isError: false,
-    errorMessage: "",
-  },
+  initialState,
   reducers: {
     clearState: (state) => {
       state.isError = false;
       state.isSuccess = false;
       return state;
     },
+
     checkToken: (state) => {
       state.token = sessionStorage.getItem("token");
       return state;
     },
-    logOut: (state) => {
+
+    logout: (state) => {
       sessionStorage.removeItem("token");
       return state;
     },
+
+    reset: () => ({ ...initialState }),
   },
   extraReducers: (builder) => {
     builder
@@ -99,5 +105,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { clearState, checkToken } = userSlice.actions;
+export const { clearState, checkToken, logout } = userSlice.actions;
 export const userSelector = (state) => state.user;
