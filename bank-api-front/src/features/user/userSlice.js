@@ -1,109 +1,158 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { url } from "../../utils/api";
 
-export const loginUser = createAsyncThunk("user/login", async ({ username, password }, thunkAPI) => {
+export const loginUser = createAsyncThunk("user/loginUser", async ({ username, password, rememberMe }, thunkAPI) => {
+  const user = {
+    email: username,
+    password: password,
+  };
+
   try {
-    const response = await fetch("http://localhost:3001/api/v1/user/login", {
-      method: "POST",
+    const response = await axios.post(`${url}/login`, user, {
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: username,
-        password: password,
-      }),
     });
 
-    const data = await response.json();
+    console.log(rememberMe);
 
-    if (response.status === 200) {
-      sessionStorage.setItem("token", data.body.token);
-      return data;
+    if (rememberMe) {
+      localStorage.setItem("token", response.data.body.token);
     } else {
-      return thunkAPI.rejectWithValue(data);
+      sessionStorage.setItem("token", response.data.body.token);
     }
-  } catch (e) {
-    console.log("Error", e.response.data);
-    thunkAPI.rejectWithValue(e.response.data);
+    return response.data.body.token;
+  } catch (err) {
+    console.log(err.response.data);
+    return thunkAPI.rejectWithValue(err.response.data);
   }
 });
 
-export const fetchUserBytoken = createAsyncThunk("user/fetchUserByToken", async ({ token }, thunkAPI) => {
+export const loadUser = createAsyncThunk("user/loadUser", async ({ token }, thunkAPI) => {
   try {
-    const response = await fetch("http://localhost:3001/api/v1/user/profile", {
+    const response = await axios({
       method: "POST",
+      url: `${url}/profile`,
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
 
-    let data = await response.json();
-    console.log("data", data, response.status);
+    if (response.status === 200) {
+      console.log(response.data);
+      return response.data;
+    }
+  } catch (err) {
+    console.log("Error", err.response.data);
+    return thunkAPI.rejectWithValue(err.response.data);
+  }
+});
+
+export const editUser = createAsyncThunk("user/editUser", async ({ token, firstname, lastname }, thunkAPI) => {
+  const user = {
+    firstName: firstname,
+    lastName: lastname,
+  };
+
+  try {
+    const response = await axios.put(`${url}/profile`, user, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.status === 200) {
-      return data;
+      console.log(response.data);
+      return response.data;
     }
-  } catch (e) {
-    console.log("Error", e.response.data);
-    thunkAPI.rejectWithValue(e.response.data);
+  } catch (err) {
+    console.log("Error", err.response.data);
+    thunkAPI.rejectWithValue(err.response.data);
   }
 });
 
 const initialState = {
+  token: sessionStorage.getItem("token") || localStorage.getItem("token"),
   email: "",
   firstname: "",
   lastname: "",
   id: "",
-  token: sessionStorage.getItem("token"),
-  isSuccess: false,
-  isError: false,
-  errorMessage: "",
+  loginStatus: "",
+  loginError: "",
+  userLoaded: false,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearState: (state) => {
-      state.isError = false;
-      state.isSuccess = false;
-      return state;
+    checkToken: (state, action) => {
+      if (state.token) {
+        return state;
+      }
     },
-
-    checkToken: (state) => {
-      state.token = sessionStorage.getItem("token");
-      return state;
-    },
-
-    logout: (state) => {
+    logout: (state, action) => {
       sessionStorage.removeItem("token");
-      return state;
-    },
+      localStorage.removeItem("token");
 
-    reset: () => ({ ...initialState }),
+      return {
+        ...state,
+        token: "",
+        email: "",
+        firstname: "",
+        lastname: "",
+        id: "",
+        loginStatus: "",
+        loginError: "",
+        userLoaded: false,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.fulfilled, (state, { payload }) => {
-        state.isSuccess = true;
-        state.token = payload.body.token;
-        return state;
+      .addCase(loginUser.fulfilled, (state, action) => {
+        //if the token does not exist, return the state
+        if (action.payload) {
+          return {
+            ...state,
+            token: action.payload,
+            loginStatus: "success",
+          };
+        } else {
+          return state;
+        }
       })
-      .addCase(loginUser.rejected, (state, { payload }) => {
-        console.log("payload", payload);
-        state.isError = true;
-        state.errorMessage = payload.message;
-        return state;
+      .addCase(loginUser.pending, (state, action) => {
+        return { ...state, loginStatus: "pending" };
       })
-      .addCase(fetchUserBytoken.fulfilled, (state, { payload }) => {
-        state.firstname = payload.body.firstName;
-        state.lastname = payload.body.lastName;
-        state.email = payload.body.email;
-        state.id = payload.body.id;
-        return state;
+      .addCase(loginUser.rejected, (state, action) => {
+        return {
+          ...state,
+          loginStatus: "rejected",
+          loginError: action.payload.message,
+        };
+      })
+      .addCase(loadUser.fulfilled, (state, { payload }) => {
+        return {
+          ...state,
+          firstname: payload.body.firstName,
+          lastname: payload.body.lastName,
+          email: payload.body.email,
+          id: payload.body.id,
+          userLoaded: true,
+        };
+      })
+      .addCase(editUser.fulfilled, (state, { payload }) => {
+        return {
+          ...state,
+          firstname: payload.body.firstName,
+          lastname: payload.body.lastName,
+        };
       });
   },
 });
 
-export const { clearState, checkToken, logout } = userSlice.actions;
+export const { logout, checkToken } = userSlice.actions;
 export const userSelector = (state) => state.user;

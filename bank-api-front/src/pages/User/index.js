@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userSelector } from "../../features/user/userSlice";
+import { userSelector, loadUser } from "../../features/user/userSlice";
 import CardAccount from "../../components/CardAccount";
+import EditUser from "../../features/user/EditUser";
 
 import "./style.scss";
 
 function User() {
-  const { firstname, lastname } = useSelector(userSelector);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userLoaded, token, firstname, lastname } = useSelector(userSelector);
 
-  return (
+  useEffect(() => {
+    if (token) {
+      dispatch(loadUser({ token: token }));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      navigate(`/`);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(loadUser({ token: token }));
+    }
+  }, [firstname, lastname]);
+
+  return userLoaded ? (
     <main className="main bg-dark">
       <div className="header">
         <h1>
@@ -16,7 +38,8 @@ function User() {
           <br />
           {firstname} {lastname}
         </h1>
-        <button className="edit-button">Edit Name</button>
+
+        <EditUser />
       </div>
       <h2 className="sr-only">Accounts</h2>
 
@@ -24,7 +47,7 @@ function User() {
       <CardAccount title="Argent Bank Savings (x6712)" amount="10,928.42" />
       <CardAccount title="Argent Bank Credit Card (x8349)" amount="184.30" />
     </main>
-  );
+  ) : null;
 }
 
 export default User;

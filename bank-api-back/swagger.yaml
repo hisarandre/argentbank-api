@@ -1,9 +1,9 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
@@ -21,17 +21,17 @@ paths:
           description: Login Payload
           required: true
           schema:
-            $ref: '#/definitions/Login'
+            $ref: "#/definitions/Login"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Login Successfully
           schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
+            $ref: "#/definitions/LoginResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/signup:
     post:
@@ -45,17 +45,17 @@ paths:
           description: Signup Payload
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Signup Successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/profile:
     post:
@@ -70,16 +70,17 @@ paths:
           name: Authorization
           description: Attach Bearer JWT token
           required: true
+          type: string
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
     put:
       security:
@@ -93,23 +94,150 @@ paths:
           name: Authorization
           description: Attach Bearer JWT token
           required: true
+          type: string
         - in: body
           name: body
           description: Update user profile attributes
           required: true
           schema:
-            $ref: '#/definitions/UserProfile'
+            $ref: "#/definitions/UserProfile"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
+  /user/accounts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Accounts API
+      description: API for fetching user accounts
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Attach transaction ID
+          required: true
+          schema:
+            $ref: "#/definitions/UserId"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User accounts retrieved successully
+          schema:
+            $ref: "#/definitions/Accounts"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server
+
+  /user/transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User transactions API
+      description: API for fetching user transactions
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Attach transaction ID
+          required: true
+          schema:
+            $ref: "#/definitions/AccountId"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User transactions retrieved successully
+          schema:
+            $ref: "#/definitions/Transactions"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server
+
+  /user/transactions/:id:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Transaction details API
+      description: API for fetching a single user transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Attach transaction ID
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionId"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User transaction retrieved successully
+          schema:
+            $ref: "#/definitions/Transaction"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+    patch:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Transaction details API
+      description: API to update, add or delete notes and category of a single transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Attach transaction ID
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionId"
+      produces:
+        - application/json
+      responses:
+        "204":
+          description: User transaction retrieved successully
+          schema:
+            $ref: "#/definitions/TransactionDetails"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -163,4 +291,69 @@ definitions:
       firstName:
         type: string
       lastName:
+        type: string
+  UserId:
+    type: object
+    properties:
+      id:
+        type: string
+  Accounts:
+    type: object
+    properties:
+      accountId:
+        type: number
+      accountTitle:
+        type: string
+      accountBalance:
+        type: number
+      accountDescription:
+        type: string
+  AccountId:
+    type: object
+    properties:
+      accountId:
+        type: number
+  Transactions:
+    type: object
+    properties:
+      transactionId:
+        type: number
+      transactionDate:
+        type: string
+      transactionDescription:
+        type: string
+      transactionAmount:
+        type: number
+      transactionBalance:
+        type: number
+  TransactionId:
+    type: object
+    properties:
+      transactionId:
+        type: number
+  Transaction:
+    type: object
+    properties:
+      transactionId:
+        type: number
+      transactionDate:
+        type: string
+      transactionDescription:
+        type: string
+      transactionAmount:
+        type: number
+      transactionBalance:
+        type: number
+      transactionType:
+        type: string
+      transactionCategory:
+        type: string
+      transactionNotes:
+        type: string
+  TransactionDetails:
+    type: object
+    properties:
+      transactionCategory:
+        type: string
+      transactionNotes:
         type: string

@@ -6,7 +6,19 @@
   padding: 10px;
 }
 
+.button-wrapper {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
 .header {
   color: white;
   margin-bottom: 2rem;
+}
+
+.edit-form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }

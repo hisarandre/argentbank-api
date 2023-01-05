@@ -1,10 +1,15 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userSelector, logout } from "../../features/user/userSlice";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/argentBankLogo.png";
 
 import "./style.scss";
 
-function Navigation({ isLogged, handleLogin }) {
+function Navigation() {
+  const { token } = useSelector(userSelector);
+  const dispatch = useDispatch();
+
   return (
     <nav className="main-nav">
       <NavLink to="/" className="main-nav-logo">
@@ -12,18 +17,18 @@ function Navigation({ isLogged, handleLogin }) {
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
       <div>
-        {!isLogged ? (
-          <NavLink to="/user/login" className="main-nav-item">
+        {!token ? (
+          <NavLink to="/login" className="main-nav-item">
             <i className="fa fa-user-circle"></i>
             Sign In
           </NavLink>
         ) : (
           <>
-            <NavLink to="/user/profile" className="main-nav-item">
+            <NavLink to="/profile" className="main-nav-item">
               <i className="fa fa-user-circle"></i>
               profile
             </NavLink>
-            <NavLink className="main-nav-item" onClick={handleLogin}>
+            <NavLink className="main-nav-item" onClick={() => dispatch(logout())}>
               logout
             </NavLink>
           </>
