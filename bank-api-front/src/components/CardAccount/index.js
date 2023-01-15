@@ -1,4 +1,5 @@
 import React from "react";
+import { PropTypes } from "prop-types";
 
 import "./style.scss";
 
@@ -18,3 +19,8 @@ const CardAccount = ({ title, amount }) => {
 };
 
 export default CardAccount;
+
+CardAccount.propTypes = {
+  title: PropTypes.string,
+  amount: PropTypes.string,
+};

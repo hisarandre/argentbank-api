@@ -113,7 +113,7 @@ paths:
         "500":
           description: Internal Server Error
   /user/accounts:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
@@ -145,7 +145,7 @@ paths:
           description: Internal Server
 
   /user/transactions:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
@@ -177,7 +177,7 @@ paths:
           description: Internal Server
 
   /user/transactions/:id:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
@@ -222,17 +222,17 @@ paths:
           type: string
         - in: body
           name: body
-          description: Attach transaction ID
+          description: Attach transaction details
           required: true
           schema:
-            $ref: "#/definitions/TransactionId"
+            $ref: "#/definitions/TransactionDetails"
       produces:
         - application/json
       responses:
         "204":
           description: User transaction retrieved successully
           schema:
-            $ref: "#/definitions/TransactionDetails"
+            $ref: "#/definitions/TransactionId"
         "400":
           description: Invalid Fields
         "500":

@@ -1,4 +1,5 @@
 import React from "react";
+import { PropTypes } from "prop-types";
 
 import "./style.scss";
 
@@ -13,3 +14,9 @@ function CardFeature({ icon, title, content }) {
 }
 
 export default CardFeature;
+
+CardFeature.propTypes = {
+  title: PropTypes.string,
+  icon: PropTypes.string,
+  content: PropTypes.string,
+};

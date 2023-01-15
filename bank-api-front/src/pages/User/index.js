@@ -16,18 +16,20 @@ function User() {
     if (token) {
       dispatch(loadUser({ token: token }));
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (!token) {
       navigate(`/`);
     }
-  }, [token]);
+  }, [token, navigate]);
 
   useEffect(() => {
     if (token) {
       dispatch(loadUser({ token: token }));
     }
+    // eslint-disable-next-line
   }, [firstname, lastname]);
 
   return userLoaded ? (

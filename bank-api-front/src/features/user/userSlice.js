@@ -16,8 +16,6 @@ export const loginUser = createAsyncThunk("user/loginUser", async ({ username, p
       },
     });
 
-    console.log(rememberMe);
-
     if (rememberMe) {
       localStorage.setItem("token", response.data.body.token);
     } else {

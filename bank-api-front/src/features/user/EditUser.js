@@ -11,8 +11,8 @@ const EditUser = () => {
 
   const handleEditUser = () => {
     if (!newFirstname && !newLastname) return;
-    if (!newFirstname) newFirstname = firstname;
-    if (!newLastname) newLastname = lastname;
+    if (!newFirstname) setNewFirstname(firstname);
+    if (!newLastname) setNewLastname(lastname);
 
     dispatch(editUser({ token: token, firstname: newFirstname, lastname: newLastname }));
   };

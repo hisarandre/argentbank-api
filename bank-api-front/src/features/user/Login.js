@@ -22,12 +22,13 @@ const Login = () => {
     if (loginStatus === "success") {
       navigate(`/profile`);
     }
-  }, [loginStatus]);
+  }, [loginStatus, navigate]);
 
   useEffect(() => {
     if (token) {
       navigate(`/profile`);
     }
+    // eslint-disable-next-line
   }, []);
 
   return (
