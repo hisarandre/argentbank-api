@@ -175,9 +175,8 @@ paths:
           description: Invalid Fields
         "500":
           description: Internal Server
-
-  /user/transactions/:id:
-    post:
+  /user/transactions/{id}:
+    get:
       security:
         - Bearer: []
       tags:
@@ -185,17 +184,16 @@ paths:
       summary: Transaction details API
       description: API for fetching a single user transaction
       parameters:
+        - in: path
+          name: id
+          description: The transaction ID
+          required: true
+          type: integer
         - in: header
           name: Authorization
           description: Attach Bearer JWT token
           required: true
           type: string
-        - in: body
-          name: body
-          description: Attach transaction ID
-          required: true
-          schema:
-            $ref: "#/definitions/TransactionId"
       produces:
         - application/json
       responses:
@@ -215,6 +213,11 @@ paths:
       summary: Transaction details API
       description: API to update, add or delete notes and category of a single transaction
       parameters:
+        - in: path
+          name: id
+          description: The transaction ID
+          required: true
+          type: integer
         - in: header
           name: Authorization
           description: Attach Bearer JWT token

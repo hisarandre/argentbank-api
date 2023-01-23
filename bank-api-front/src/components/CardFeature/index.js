@@ -13,10 +13,10 @@ function CardFeature({ icon, title, content }) {
   );
 }
 
-export default CardFeature;
-
 CardFeature.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.string,
   content: PropTypes.string,
 };
+
+export default CardFeature;

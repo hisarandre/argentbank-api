@@ -18,9 +18,9 @@ const CardAccount = ({ title, amount }) => {
   );
 };
 
-export default CardAccount;
-
 CardAccount.propTypes = {
   title: PropTypes.string,
   amount: PropTypes.string,
 };
+
+export default CardAccount;
