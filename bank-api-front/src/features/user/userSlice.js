@@ -23,7 +23,6 @@ export const loginUser = createAsyncThunk("user/loginUser", async ({ username, p
     }
     return response.data.body.token;
   } catch (err) {
-    console.log(err.response.data);
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
@@ -39,11 +38,9 @@ export const loadUser = createAsyncThunk("user/loadUser", async ({ token }, thun
     });
 
     if (response.status === 200) {
-      console.log(response.data);
       return response.data;
     }
   } catch (err) {
-    console.log("Error", err.response.data);
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
@@ -62,11 +59,9 @@ export const editUser = createAsyncThunk("user/editUser", async ({ token, firstn
     });
 
     if (response.status === 200) {
-      console.log(response.data);
       return response.data;
     }
   } catch (err) {
-    console.log("Error", err.response.data);
     thunkAPI.rejectWithValue(err.response.data);
   }
 });

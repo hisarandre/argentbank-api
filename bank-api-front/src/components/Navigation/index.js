@@ -7,7 +7,7 @@ import logo from "../../assets/argentBankLogo.png";
 import "./style.scss";
 
 function Navigation() {
-  const { token } = useSelector(userSelector);
+  const { token, firstname, lastname } = useSelector(userSelector);
   const dispatch = useDispatch();
 
   return (
@@ -26,7 +26,7 @@ function Navigation() {
           <>
             <NavLink to="/profile" className="main-nav-item">
               <i className="fa fa-user-circle"></i>
-              profile
+              {firstname} {lastname}
             </NavLink>
             <NavLink className="main-nav-item" onClick={() => dispatch(logout())}>
               logout

@@ -19,6 +19,7 @@ function User() {
     // eslint-disable-next-line
   }, []);
 
+  //redirect after logout
   useEffect(() => {
     if (!token) {
       navigate(`/`);
